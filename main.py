@@ -1,1 +1,27 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+cols = ['MDVP:Fo(Hz)', 'MDVP:Fhi(Hz)', 'MDVP:Flo(Hz)', 'status','HNR','MDVP:Shimmer']
 
+# יצירת הגרף
+sns.pairplot(df[cols], hue='status', palette='husl')
+plt.show()
+
+
+x=df[['MDVP:Fo(Hz)','HNR']]
+y=df['status']
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+x_scaled = scaler.fit_transform(x)
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x_scaled, y, test_size=0.2, random_state=42)
+from sklearn.svm import SVC
+model = SVC()
+model.fit(x_train, y_train)
+
+
+
+y_pred = model.predict(x_test)
+from sklearn.metrics import accuracy_score
+y_pred = model.predict(x_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy}")
